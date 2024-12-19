@@ -144,16 +144,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="App.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="WindowDelegate.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="App.h" />
-    <ClInclude Include="WindowDelegate.h" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include=".gitignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="be-src\1_PresentationCore\" />
+    <Folder Include="fe-dist\" />
+    <Folder Include="fe-src\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="be-src\1_PresentationCore\App.cpp" />
+    <ClCompile Include="be-src\1_PresentationCore\main.cpp" />
+    <ClCompile Include="be-src\1_PresentationCore\Other.cpp" />
+    <ClCompile Include="be-src\1_PresentationCore\Renderer.cpp" />
+    <ClCompile Include="be-src\1_PresentationCore\Scheme\CustomSchemeHandler.cpp" />
+    <ClCompile Include="be-src\1_PresentationCore\Scheme\PandaSchemeFactory.cpp" />
+    <ClCompile Include="be-src\1_PresentationCore\WindowDelegate.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="be-src\1_PresentationCore\App.h" />
+    <ClInclude Include="be-src\1_PresentationCore\Other.h" />
+    <ClInclude Include="be-src\1_PresentationCore\Renderer.h" />
+    <ClInclude Include="be-src\1_PresentationCore\Scheme\CustomSchemeHandler.h" />
+    <ClInclude Include="be-src\1_PresentationCore\Scheme\PandaSchemeFactory.h" />
+    <ClInclude Include="be-src\1_PresentationCore\WindowDelegate.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

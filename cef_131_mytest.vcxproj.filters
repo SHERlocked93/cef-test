@@ -1,32 +1,63 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="源文件">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="be-src">
+      <UniqueIdentifier>{7bfd7c93-afd2-4e73-8e9a-21725c3b0ae9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="be-src\1_PresentaitonCore">
+      <UniqueIdentifier>{babceb2b-8f2e-48eb-874a-65cb95769f82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="be-src\1_PresentaitonCore\Scheme">
+      <UniqueIdentifier>{82df2338-8328-408d-b5a5-03f0720a9c48}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="be-src\1_PresentationCore\App.cpp">
+      <Filter>be-src\1_PresentaitonCore</Filter>
     </ClCompile>
-    <ClCompile Include="App.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="be-src\1_PresentationCore\main.cpp">
+      <Filter>be-src\1_PresentaitonCore</Filter>
     </ClCompile>
-    <ClCompile Include="WindowDelegate.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="be-src\1_PresentationCore\Other.cpp">
+      <Filter>be-src\1_PresentaitonCore</Filter>
+    </ClCompile>
+    <ClCompile Include="be-src\1_PresentationCore\Renderer.cpp">
+      <Filter>be-src\1_PresentaitonCore</Filter>
+    </ClCompile>
+    <ClCompile Include="be-src\1_PresentationCore\WindowDelegate.cpp">
+      <Filter>be-src\1_PresentaitonCore</Filter>
+    </ClCompile>
+    <ClCompile Include="be-src\1_PresentationCore\Scheme\CustomSchemeFactory.cpp">
+      <Filter>be-src\1_PresentaitonCore\Scheme</Filter>
+    </ClCompile>
+    <ClCompile Include="be-src\1_PresentationCore\Scheme\CustomSchemeHandler.cpp">
+      <Filter>be-src\1_PresentaitonCore\Scheme</Filter>
+    </ClCompile>
+    <ClCompile Include="be-src\1_PresentationCore\Scheme\HttpSchemeFactory.cpp">
+      <Filter>be-src\1_PresentaitonCore\Scheme</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="App.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="be-src\1_PresentationCore\App.h">
+      <Filter>be-src\1_PresentaitonCore</Filter>
     </ClInclude>
-    <ClInclude Include="WindowDelegate.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="be-src\1_PresentationCore\Other.h">
+      <Filter>be-src\1_PresentaitonCore</Filter>
+    </ClInclude>
+    <ClInclude Include="be-src\1_PresentationCore\Renderer.h">
+      <Filter>be-src\1_PresentaitonCore</Filter>
+    </ClInclude>
+    <ClInclude Include="be-src\1_PresentationCore\WindowDelegate.h">
+      <Filter>be-src\1_PresentaitonCore</Filter>
+    </ClInclude>
+    <ClInclude Include="be-src\1_PresentationCore\Scheme\CustomSchemeFactory.h">
+      <Filter>be-src\1_PresentaitonCore\Scheme</Filter>
+    </ClInclude>
+    <ClInclude Include="be-src\1_PresentationCore\Scheme\CustomSchemeHandler.h">
+      <Filter>be-src\1_PresentaitonCore\Scheme</Filter>
+    </ClInclude>
+    <ClInclude Include="be-src\1_PresentationCore\Scheme\HttpSchemeFactory.h">
+      <Filter>be-src\1_PresentaitonCore\Scheme</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

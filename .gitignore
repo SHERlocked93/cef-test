@@ -1,7 +1,14 @@
-/.vs/
+**/.vs/
+**/.vscode/
+**/.idea/
+**/.git/
+**/node_modules/
+**/.github/
+
 /cef_131_mytest/
 /x64/
 /x86/
 /build/
 /Debug/
 /Release/
+/fe-dist/main-view/
