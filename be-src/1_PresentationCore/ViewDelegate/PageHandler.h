@@ -2,16 +2,41 @@
 #include <list>
 
 #include "include/cef_app.h"
-class PageHandler : public CefClient, public CefLifeSpanHandler, public CefJSDialogHandler {
+class PageHandler : public CefClient,
+                    public CefLifeSpanHandler,    // 页面生命周期
+                    public CefJSDialogHandler,    // JS的弹框
+                    public CefContextMenuHandler  // 右键菜单
+{
  public:
   PageHandler() = default;
+
+  CefRefPtr<CefContextMenuHandler> GetContextMenuHandler() override { return this; }
+
+  //! 右键展开菜单时
+  //! \param browser 浏览器对象
+  //! \param frame 页面上的iframe
+  //! \param params 获得用户当前鼠标所在的位置、鼠标所在位置的页面元素的类型、当前页面的路径等信息
+  //! \param model 默认的菜单项
+  void OnBeforeContextMenu(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                           CefRefPtr<CefContextMenuParams> params, CefRefPtr<CefMenuModel> model) override;
+
+  //! 点击了右键菜单某项时的事件
+  //! \param browser
+  //! \param frame
+  //! \param params
+  //! \param command_id 获取用户点击了具体的哪个菜单项
+  //! \param event_flags 获取按下鼠标右键时，是否同时按下了 Ctrl 键或者 Alt 键等信息
+  //! \return
+  bool OnContextMenuCommand(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                            CefRefPtr<CefContextMenuParams> params, int command_id,
+                            EventFlags event_flags) override;
 
   CefRefPtr<CefJSDialogHandler> GetJSDialogHandler() override { return this; }
 
   //! 阻止页面关闭的对话框弹出之前触发的事件
   //! \param browser 浏览器对象
   //! \param message_text 提示文本字符串
-  //! \param is_reload 当前关闭页面的行为是不是刷新行为
+  //! \param is_reload 当前关闭页面的行为是否刷新行为
   //! \param callback
   //! \return
   bool OnBeforeUnloadDialog(CefRefPtr<CefBrowser> browser, const CefString& message_text, bool is_reload,
