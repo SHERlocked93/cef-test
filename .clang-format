@@ -42,7 +42,7 @@ BraceWrapping:
 #BreakBeforeTernaryOperators: true
 #BreakConstructorInitializers: BeforeColon
 #BreakInheritanceList: BeforeColon
-ColumnLimit: 120
+ColumnLimit: 110
 #CompactNamespaces: false
 #ContinuationIndentWidth: 4
 #Cpp11BracedListStyle: true
@@ -61,7 +61,7 @@ ColumnLimit: 120
 #PointerAlignment: Left
 #ReflowComments: false
 ## SeparateDefinitionBlocks: Always   # Only support since clang-format 14
-SortUsingDeclarations: true
+SortUsingDeclarations: LexicographicNumeric
 #SpaceAfterCStyleCast: false
 #SpaceAfterLogicalNot: false
 #SpaceAfterTemplateKeyword: true
@@ -81,4 +81,4 @@ SortUsingDeclarations: true
 #SpacesInSquareBrackets: false
 #Standard: c++11
 #TabWidth: 4
-#UseTab: Never
+UseTab: Never

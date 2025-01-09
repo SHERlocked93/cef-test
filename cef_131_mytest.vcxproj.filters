@@ -13,6 +13,12 @@
     <Filter Include="fe-src">
       <UniqueIdentifier>{79365636-0f2a-4419-89ff-8fb009f1f21f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="fe-src\main-view">
+      <UniqueIdentifier>{107fb8a9-0829-4ecf-8836-b3fd930afaac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="be-src\1_PresentaitonCore\ViewDelegate">
+      <UniqueIdentifier>{b5574e15-7123-4d2e-9873-6a6305694a14}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="be-src\1_PresentationCore\App.cpp">
@@ -27,14 +33,20 @@
     <ClCompile Include="be-src\1_PresentationCore\Renderer.cpp">
       <Filter>be-src\1_PresentaitonCore</Filter>
     </ClCompile>
-    <ClCompile Include="be-src\1_PresentationCore\WindowDelegate.cpp">
-      <Filter>be-src\1_PresentaitonCore</Filter>
-    </ClCompile>
     <ClCompile Include="be-src\1_PresentationCore\Scheme\CustomResourceHandler.cpp">
       <Filter>be-src\1_PresentaitonCore\Scheme</Filter>
     </ClCompile>
     <ClCompile Include="be-src\1_PresentationCore\Scheme\PandaSchemeFactory.cpp">
       <Filter>be-src\1_PresentaitonCore\Scheme</Filter>
+    </ClCompile>
+    <ClCompile Include="be-src\1_PresentationCore\ViewDelegate\ViewDelegate.cpp">
+      <Filter>be-src\1_PresentaitonCore\ViewDelegate</Filter>
+    </ClCompile>
+    <ClCompile Include="be-src\1_PresentationCore\ViewDelegate\WindowDelegate.cpp">
+      <Filter>be-src\1_PresentaitonCore\ViewDelegate</Filter>
+    </ClCompile>
+    <ClCompile Include="be-src\1_PresentationCore\ViewDelegate\PageHandler.cpp">
+      <Filter>be-src\1_PresentaitonCore\ViewDelegate</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -47,22 +59,28 @@
     <ClInclude Include="be-src\1_PresentationCore\Renderer.h">
       <Filter>be-src\1_PresentaitonCore</Filter>
     </ClInclude>
-    <ClInclude Include="be-src\1_PresentationCore\WindowDelegate.h">
-      <Filter>be-src\1_PresentaitonCore</Filter>
-    </ClInclude>
     <ClInclude Include="be-src\1_PresentationCore\Scheme\CustomResourceHandler.h">
       <Filter>be-src\1_PresentaitonCore\Scheme</Filter>
     </ClInclude>
     <ClInclude Include="be-src\1_PresentationCore\Scheme\PandaSchemeFactory.h">
       <Filter>be-src\1_PresentaitonCore\Scheme</Filter>
     </ClInclude>
+    <ClInclude Include="be-src\1_PresentationCore\ViewDelegate\ViewDelegate.h">
+      <Filter>be-src\1_PresentaitonCore\ViewDelegate</Filter>
+    </ClInclude>
+    <ClInclude Include="be-src\1_PresentationCore\ViewDelegate\WindowDelegate.h">
+      <Filter>be-src\1_PresentaitonCore\ViewDelegate</Filter>
+    </ClInclude>
+    <ClInclude Include="be-src\1_PresentationCore\ViewDelegate\PageHandler.h">
+      <Filter>be-src\1_PresentaitonCore\ViewDelegate</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="fe-src\a.js">
-      <Filter>fe-src</Filter>
+    <CopyFileToFolders Include="fe-src\main-view\a.js">
+      <Filter>fe-src\main-view</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="fe-src\index.html">
-      <Filter>fe-src</Filter>
+    <CopyFileToFolders Include="fe-src\main-view\index.html">
+      <Filter>fe-src\main-view</Filter>
     </CopyFileToFolders>
   </ItemGroup>
 </Project>

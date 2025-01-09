@@ -7,6 +7,7 @@ class WindowDelegate : public CefWindowDelegate {
   explicit WindowDelegate(CefRefPtr<CefBrowserView> browser_view) : browser_view_(browser_view) {}
   void OnWindowCreated(CefRefPtr<CefWindow> window) override;
   void OnWindowDestroyed(CefRefPtr<CefWindow> window) override;
+  bool CanClose(CefRefPtr<CefWindow> window) override;
   CefRect GetInitialBounds(CefRefPtr<CefWindow> window) override;
   WindowDelegate(const WindowDelegate&) = delete;
   WindowDelegate& operator=(const WindowDelegate&) = delete;

@@ -10,9 +10,16 @@ void WindowDelegate::OnWindowCreated(CefRefPtr<CefWindow> window) {
   window->SetTitle("这是我的窗口标题");
   // window->CenterWindow(CefSize(800, 600));
 }
-void WindowDelegate::OnWindowDestroyed(CefRefPtr<CefWindow> window) {
-  browser_view_ = nullptr;
-  CefQuitMessageLoop();
+
+void WindowDelegate::OnWindowDestroyed(CefRefPtr<CefWindow> window) { browser_view_ = nullptr; }
+
+bool WindowDelegate::CanClose(CefRefPtr<CefWindow> window) {
+  bool result = true;
+  CefRefPtr<CefBrowser> browser = browser_view_->GetBrowser();
+  if (browser) {
+    result = browser->GetHost()->TryCloseBrowser();
+  }
+  return result;
 }
 
 CefRect WindowDelegate::GetInitialBounds(CefRefPtr<CefWindow> window) {
