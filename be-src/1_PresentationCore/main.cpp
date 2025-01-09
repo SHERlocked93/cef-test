@@ -12,14 +12,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
   CefRefPtr<CefApp> app;
   if (!command_line->HasSwitch("type")) {
-    app = new App();
+    app = new App();  // 浏览器进程
   } else if (command_line->GetSwitchValue("type").ToString() == "renderer") {
-    app = new Renderer();
+    app = new Renderer();  // 渲染进程
   } else {
-    app = new Other();
+    app = new Other(); // GPU进程、辅助进程等
   }
 
-  int exit_code = CefExecuteProcess(main_args, app, nullptr);
+  int exit_code = CefExecuteProcess(main_args, app, nullptr);  // 启动进程
   if (exit_code >= 0) {
     DLOG(INFO) << "process exit code" << exit_code;
     return exit_code;

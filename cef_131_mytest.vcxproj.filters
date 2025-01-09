@@ -10,6 +10,9 @@
     <Filter Include="be-src\1_PresentaitonCore\Scheme">
       <UniqueIdentifier>{82df2338-8328-408d-b5a5-03f0720a9c48}</UniqueIdentifier>
     </Filter>
+    <Filter Include="fe-src">
+      <UniqueIdentifier>{79365636-0f2a-4419-89ff-8fb009f1f21f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="be-src\1_PresentationCore\App.cpp">
@@ -27,13 +30,10 @@
     <ClCompile Include="be-src\1_PresentationCore\WindowDelegate.cpp">
       <Filter>be-src\1_PresentaitonCore</Filter>
     </ClCompile>
-    <ClCompile Include="be-src\1_PresentationCore\Scheme\CustomSchemeFactory.cpp">
+    <ClCompile Include="be-src\1_PresentationCore\Scheme\CustomResourceHandler.cpp">
       <Filter>be-src\1_PresentaitonCore\Scheme</Filter>
     </ClCompile>
-    <ClCompile Include="be-src\1_PresentationCore\Scheme\CustomSchemeHandler.cpp">
-      <Filter>be-src\1_PresentaitonCore\Scheme</Filter>
-    </ClCompile>
-    <ClCompile Include="be-src\1_PresentationCore\Scheme\HttpSchemeFactory.cpp">
+    <ClCompile Include="be-src\1_PresentationCore\Scheme\PandaSchemeFactory.cpp">
       <Filter>be-src\1_PresentaitonCore\Scheme</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,14 +50,19 @@
     <ClInclude Include="be-src\1_PresentationCore\WindowDelegate.h">
       <Filter>be-src\1_PresentaitonCore</Filter>
     </ClInclude>
-    <ClInclude Include="be-src\1_PresentationCore\Scheme\CustomSchemeFactory.h">
+    <ClInclude Include="be-src\1_PresentationCore\Scheme\CustomResourceHandler.h">
       <Filter>be-src\1_PresentaitonCore\Scheme</Filter>
     </ClInclude>
-    <ClInclude Include="be-src\1_PresentationCore\Scheme\CustomSchemeHandler.h">
+    <ClInclude Include="be-src\1_PresentationCore\Scheme\PandaSchemeFactory.h">
       <Filter>be-src\1_PresentaitonCore\Scheme</Filter>
     </ClInclude>
-    <ClInclude Include="be-src\1_PresentationCore\Scheme\HttpSchemeFactory.h">
-      <Filter>be-src\1_PresentaitonCore\Scheme</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="fe-src\a.js">
+      <Filter>fe-src</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="fe-src\index.html">
+      <Filter>fe-src</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

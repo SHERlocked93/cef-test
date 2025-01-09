@@ -3,12 +3,13 @@
 #include <filesystem>
 #include <fstream>
 
-#include "./CustomSchemeHandler.h"
+#include "./CustomResourceHandler.h"
 #include "include/wrapper/cef_helpers.h"
 #include "include/wrapper/cef_stream_resource_handler.h"
 
 CefRefPtr<CefResourceHandler> PandaSchemeFactory::Create(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
                                                          const CefString& scheme_name, CefRefPtr<CefRequest> request) {
+  // 确保此方法运行在IO线程上，这类线程只负责处理IPC消息和网络消息（IPC消息是CEF框架用于进程间通信的消息），避免在此类线程上执行阻塞性工作
   CEF_REQUIRE_IO_THREAD()
   std::string url = request->GetURL().ToString();
   std::string urlPrefix = "panda://";
@@ -31,5 +32,5 @@ CefRefPtr<CefResourceHandler> PandaSchemeFactory::Create(CefRefPtr<CefBrowser> b
   std::string mime_type_ = ext == ".html" ? "text/html" : "*";
   auto stream = CefStreamReader::CreateForFile(targetPath.generic_wstring());
 
-  return new CustomSchemeHandler();
+  return new CustomResourceHandler();
 };

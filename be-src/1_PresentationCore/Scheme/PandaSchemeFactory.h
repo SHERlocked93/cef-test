@@ -1,6 +1,7 @@
 #pragma once
 #include "include/cef_app.h"
 
+// 自定义协议，接管并处理请求
 class PandaSchemeFactory : public CefSchemeHandlerFactory {
  public:
   PandaSchemeFactory() = default;

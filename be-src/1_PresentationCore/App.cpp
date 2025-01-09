@@ -20,9 +20,13 @@ void App::OnContextInitialized() {
 
   CefRefPtr<CefBrowserView> browser_view =
       CefBrowserView::CreateBrowserView(nullptr, "panda://main-view/index.html", settings, nullptr, nullptr, nullptr);
+
   CefWindow::CreateTopLevelWindow(new WindowDelegate(browser_view));
 }
 
 void App::OnRegisterCustomSchemes(CefRawPtr<CefSchemeRegistrar> registrar) {
-  registrar->AddCustomScheme(SCHEMA_NAME, CEF_SCHEME_OPTION_STANDARD | CEF_SCHEME_OPTION_CORS_ENABLED);
+  registrar->AddCustomScheme(
+      SCHEMA_NAME, CEF_SCHEME_OPTION_STANDARD |  // 标准协议 [scheme]://[username]:[password]@[host]:[port]/[url-path]`
+                       CEF_SCHEME_OPTION_CORS_ENABLED  // 放开同源策略
+  );
 }
