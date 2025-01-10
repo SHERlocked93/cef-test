@@ -3,6 +3,8 @@
 #include "include/cef_app.h"
 #include "include/views/cef_display.h"
 
+bool WindowDelegate::IsFrameless(CefRefPtr<CefWindow> window) { return !is_devtool_; }
+
 void WindowDelegate::OnWindowCreated(CefRefPtr<CefWindow> window) {
   window->AddChildView(browser_view_);
   window->Show();

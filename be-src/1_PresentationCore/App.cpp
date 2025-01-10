@@ -24,7 +24,8 @@ void App::OnContextInitialized() {
   CefRefPtr<ViewDelegate> viewDelegate(new ViewDelegate());
   CefRefPtr<CefBrowserView> browserView = CefBrowserView::CreateBrowserView(
       pageHandler, "panda://main-view/index.html", settings, nullptr, nullptr, viewDelegate);
-  CefWindow::CreateTopLevelWindow(new WindowDelegate(browserView));
+
+  CefWindow::CreateTopLevelWindow(new WindowDelegate(browserView, false));
 }
 
 void App::OnRegisterCustomSchemes(CefRawPtr<CefSchemeRegistrar> registrar) {

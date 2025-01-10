@@ -125,6 +125,14 @@
     <Manifest>
       <AdditionalManifestFiles>$(ProjectDir)ceftest.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
     </Manifest>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -171,20 +179,6 @@
     <ClInclude Include="be-src\1_PresentationCore\ViewDelegate\PageHandler.h" />
     <ClInclude Include="be-src\1_PresentationCore\ViewDelegate\ViewDelegate.h" />
     <ClInclude Include="be-src\1_PresentationCore\ViewDelegate\WindowDelegate.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <CopyFileToFolders Include="fe-src\main-view\a.js">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)html/main-view</DestinationFolders>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </RootFolder>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="fe-src\main-view\index.html">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)html/main-view</DestinationFolders>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </RootFolder>
-    </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

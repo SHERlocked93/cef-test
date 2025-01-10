@@ -26,7 +26,7 @@ CefRefPtr<CefResourceHandler> PandaSchemeFactory::Create(CefRefPtr<CefBrowser> b
   TCHAR buffer[MAX_PATH] = {0};
   GetModuleFileName(NULL, buffer, MAX_PATH);
   std::filesystem::path targetPath(buffer);
-  targetPath = targetPath / ".." / "html" / url;
+  targetPath = targetPath / ".." / ".." / ".." / "fe-dist" / url;
   if (!std::filesystem::exists(targetPath))
     DLOG(INFO) << "try load: " << targetPath.generic_wstring() << ", but cannot find!";
 

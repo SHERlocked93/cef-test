@@ -3,9 +3,10 @@
 
 #include "include/cef_app.h"
 class PageHandler : public CefClient,
-                    public CefLifeSpanHandler,    // 页面生命周期
-                    public CefJSDialogHandler,    // JS的弹框
-                    public CefContextMenuHandler  // 右键菜单
+                    public CefLifeSpanHandler,     // 页面生命周期
+                    public CefJSDialogHandler,     // JS的弹框
+                    public CefContextMenuHandler,  // 右键菜单
+                    public CefDragHandler          // 拖拽事件
 {
  public:
   PageHandler() = default;
@@ -61,6 +62,11 @@ class PageHandler : public CefClient,
   void OnAfterCreated(CefRefPtr<CefBrowser> browser) override;
   //! 页面即将关闭
   void OnBeforeClose(CefRefPtr<CefBrowser> browser) override;
+
+  CefRefPtr<CefDragHandler> GetDragHandler() override { return this; }
+
+  void OnDraggableRegionsChanged(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                                 const std::vector<CefDraggableRegion>& regions) override;
 
  private:
   IMPLEMENT_REFCOUNTING(PageHandler);

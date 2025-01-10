@@ -5,7 +5,8 @@
 
 #include "include/wrapper/cef_helpers.h"
 
-bool CustomResourceHandler::Open(CefRefPtr<CefRequest> request, bool& handle_request, CefRefPtr<CefCallback> callback) {
+bool CustomResourceHandler::Open(CefRefPtr<CefRequest> request, bool& handle_request,
+                                 CefRefPtr<CefCallback> callback) {
   DCHECK(!CefCurrentlyOn(TID_UI) && !CefCurrentlyOn(TID_IO));
   handle_request = true;
   bool handled = true;

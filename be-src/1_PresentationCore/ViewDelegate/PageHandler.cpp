@@ -1,5 +1,7 @@
 ﻿#include "PageHandler.h"
 
+#include "include/views/cef_browser_view.h"
+#include "include/views/cef_window.h"
 #include "include/wrapper/cef_helpers.h"
 
 void PageHandler::OnBeforeContextMenu(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
@@ -19,6 +21,9 @@ void PageHandler::OnBeforeContextMenu(CefRefPtr<CefBrowser> browser, CefRefPtr<C
   model->AddRadioItem(MENU_ID_USER_FIRST + 5, L"这是一个包含复选框的菜单", 888);
   model->AddRadioItem(MENU_ID_USER_FIRST + 6, L"这是一个包含单选框的菜单", 888);
   model->SetChecked(MENU_ID_USER_FIRST + 6, true);
+
+  model->AddSeparator();
+  model->AddItem(MENU_ID_USER_FIRST + 7, L"刷新");
 }
 
 bool PageHandler::OnContextMenuCommand(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
@@ -30,6 +35,10 @@ bool PageHandler::OnContextMenuCommand(CefRefPtr<CefBrowser> browser, CefRefPtr<
       CefBrowserSettings browserSettings;
       CefPoint mousePoint(params->GetXCoord(), params->GetYCoord());
       browser->GetHost()->ShowDevTools(windowInfo, this, browserSettings, mousePoint);
+      break;
+    }
+    case MENU_ID_USER_FIRST + 7: {
+      browser->Reload();
       break;
     }
     default: {
@@ -46,11 +55,7 @@ bool PageHandler::OnBeforeUnloadDialog(CefRefPtr<CefBrowser> browser, const CefS
   // message_text.c_str() 的值是Is it OK to leave/refresh this page
   int msgboxID = MessageBox(NULL, L"您编辑的内容尚未保存.\n确定要关闭窗口吗?", L"系统提示",
                             MB_ICONEXCLAMATION | MB_OKCANCEL);
-  if (msgboxID == IDOK) {
-    callback->Continue(true, CefString());
-  } else {
-    callback->Continue(false, CefString());
-  }
+  callback->Continue(msgboxID == IDOK, CefString());
   return true;
 }
 
@@ -88,4 +93,13 @@ void PageHandler::OnBeforeClose(CefRefPtr<CefBrowser> browser) {
   }
 
   if (browsers.empty()) CefQuitMessageLoop();
+}
+
+void PageHandler::OnDraggableRegionsChanged(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                                            const std::vector<CefDraggableRegion>& regions) {
+  CefRefPtr<CefBrowserView> browser_view = CefBrowserView::GetForBrowser(browser);
+  if (browser_view) {
+    CefRefPtr<CefWindow> window = browser_view->GetWindow();
+    if (window) window->SetDraggableRegions(regions);
+  }
 }
