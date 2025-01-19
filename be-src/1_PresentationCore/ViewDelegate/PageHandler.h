@@ -13,6 +13,10 @@ class PageHandler : public CefClient,
 
   CefRefPtr<CefContextMenuHandler> GetContextMenuHandler() override { return this; }
 
+  //! 接收渲染进程发来的消息
+  bool OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                                CefProcessId source_process, CefRefPtr<CefProcessMessage> message) override;
+
   //! 右键展开菜单时
   //! \param browser 浏览器对象
   //! \param frame 页面上的iframe

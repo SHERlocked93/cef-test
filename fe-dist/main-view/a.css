@@ -46,7 +46,11 @@ body {
     background: #ffadd2;
 }
 
-#closeBtn:hover {
+#restore-btn {
+    display: none;
+}
+
+#close-btn:hover {
     background: #ff7875;
     color: #fff;
 }

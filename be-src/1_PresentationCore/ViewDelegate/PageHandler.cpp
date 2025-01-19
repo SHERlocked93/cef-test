@@ -1,8 +1,47 @@
 ﻿#include "PageHandler.h"
 
+#include <ranges>
+
 #include "include/views/cef_browser_view.h"
 #include "include/views/cef_window.h"
 #include "include/wrapper/cef_helpers.h"
+
+std::vector<std::string> split(const std::string& s, char delim) {
+  std::vector<std::string> elems;
+  std::istringstream iss(s);
+  std::string item;
+  while (std::getline(iss, item, delim)) {
+    elems.push_back(item);
+  }
+  return elems;
+}
+
+bool PageHandler::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                                           CefProcessId source_process,
+                                           CefRefPtr<CefProcessMessage> message) {
+  CEF_REQUIRE_UI_THREAD()
+  std::string msgName = message->GetName();
+  std::vector<std::string> msgVec = split(msgName, '_');
+
+  const auto& msgChannel = msgVec.at(0);
+  const auto& msgType = msgVec.at(1);
+
+  if (msgChannel == "window") {
+    CefRefPtr<CefBrowserView> browserView = CefBrowserView::GetForBrowser(browser);
+    CefRefPtr<CefWindow> window = browserView->GetWindow();
+
+    if (msgType == "minimize") {
+      window->Minimize();
+    } else if (msgType == "maximize") {
+      window->Maximize();
+    } else if (msgType == "close") {
+      window->Close();
+    } else if (msgType == "restore") {
+      window->Restore();
+    }
+  }
+  return true;
+}
 
 void PageHandler::OnBeforeContextMenu(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
                                       CefRefPtr<CefContextMenuParams> params, CefRefPtr<CefMenuModel> model) {

@@ -4,7 +4,7 @@ let eventer = {
     dic: {},
     emit(eventName, ...obj) {
         if (!this.dic[eventName]) {
-            console.warn(`Ã»ÓÐÕÒµ½¸ÃÊÂ¼þµÄ¼àÌýº¯Êý£º${eventName}`)
+            console.warn(`æ²¡æœ‰æ‰¾åˆ°è¯¥äº‹ä»¶çš„ç›‘å¬å‡½æ•°ï¼š${eventName}`)
             return;
         }
         this.dic[eventName].forEach((func) => func(...obj))
@@ -25,11 +25,14 @@ let eventer = {
     off(eventName, callBack) {
         if (!this.dic[eventName]?.length < 1) return
         if (!callBack) {
-            delete this.dic[eventName]
+            offAll(eventName)
             return
         }
         let index = this.dic[eventName].findIndex((v) => v == callBack)
         if (index >= 0) this.dic[eventName].splice(index, 1)
+    },
+    offAll(eventName) {
+        delete this.dic[eventName]
     }
 }
 let browserWindow = {
@@ -55,7 +58,7 @@ let browserWindow = {
     isMaximized() {
         let hSpan = window.outerHeight - screen.availHeight
         let wSpan = window.outerWidth - screen.availWidth
-        return Math.abs(hSpan) < 2 && Math.abs(wSpan) < 2
+        return Math.abs(hSpan) <= 2 && Math.abs(wSpan) <= 2
     },
     maximized: false,
     init() {
@@ -68,20 +71,23 @@ let browserWindow = {
         })
     }
 }
-let minimizeBtn = document.querySelector("#minimize-btn");
-let maximizeBtn = document.querySelector("#maximize-btn");
-let restoreBtn = document.querySelector("#restore-btn");
-let closeBtn = document.querySelector("#close-btn");
+
+const minimizeBtn = document.querySelector("#minimize-btn");
+const maximizeBtn = document.querySelector("#maximize-btn");
+const restoreBtn = document.querySelector("#restore-btn");
+const closeBtn = document.querySelector("#close-btn");
+
 minimizeBtn.addEventListener("click", () => browserWindow.minimize());
 closeBtn.addEventListener("click", () => browserWindow.close());
 maximizeBtn.addEventListener("click", () => browserWindow.maximize())
 restoreBtn.addEventListener("click", () => browserWindow.restore())
 browserWindow.init();
+
 eventer.on("window_maximize", () => {
     maximizeBtn.setAttribute("style", "display:none");
-    restoreBtn.removeAttribute("style");
+    restoreBtn.setAttribute("style", "display:block");
 })
 eventer.on("window_unMaximize", () => {
     restoreBtn.setAttribute("style", "display:none");
-    maximizeBtn.removeAttribute("style");
+    maximizeBtn.setAttribute("style", "display:block");
 })
