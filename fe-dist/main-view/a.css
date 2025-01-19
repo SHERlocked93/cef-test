@@ -1,0 +1,62 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    user-select: none;
+    color: #333;
+    font-family: -apple-system, Ubuntu, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+.title-bar {
+    height: 38px;
+    background: #ffd6e7;
+    line-height: 38px;
+    padding-left: 16px;
+    display: flex;
+    flex-direction: row;
+}
+
+.title-content {
+    flex-grow: 1;
+    -webkit-app-region: drag;
+}
+
+.title-content > .iconfont {
+    margin-right: 5px;
+}
+
+.tool-box {
+    flex-shrink: 0;
+    display: flex;
+}
+
+.tool-box div {
+    flex: 1;
+    text-align: center;
+    width: 40px;
+}
+
+.tool-box div:hover {
+    background: #ffadd2;
+}
+
+#closeBtn:hover {
+    background: #ff7875;
+    color: #fff;
+}
+
+.tool-box div i {
+    font-size: 12px;
+}
+
+.content {
+    flex: 1;
+    text-align: center;
+    padding-top: 120px;
+}

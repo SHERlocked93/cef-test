@@ -42,6 +42,9 @@
     <ClCompile Include="be-src\1_PresentationCore\ViewDelegate\PageHandler.cpp">
       <Filter>be-src\1_PresentaitonCore\ViewDelegate</Filter>
     </ClCompile>
+    <ClCompile Include="be-src\1_PresentationCore\V8Handler.cpp">
+      <Filter>be-src\1_PresentaitonCore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="be-src\1_PresentationCore\App.h">
@@ -67,6 +70,9 @@
     </ClInclude>
     <ClInclude Include="be-src\1_PresentationCore\ViewDelegate\PageHandler.h">
       <Filter>be-src\1_PresentaitonCore\ViewDelegate</Filter>
+    </ClInclude>
+    <ClInclude Include="be-src\1_PresentationCore\V8Handler.h">
+      <Filter>be-src\1_PresentaitonCore</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

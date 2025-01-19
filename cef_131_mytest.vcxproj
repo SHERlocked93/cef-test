@@ -153,8 +153,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
-    <Content Include="fe-src\a.js" />
-    <Content Include="fe-src\index.html" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="fe-dist\" />
@@ -166,6 +164,7 @@
     <ClCompile Include="be-src\1_PresentationCore\Renderer.cpp" />
     <ClCompile Include="be-src\1_PresentationCore\Scheme\CustomResourceHandler.cpp" />
     <ClCompile Include="be-src\1_PresentationCore\Scheme\PandaSchemeFactory.cpp" />
+    <ClCompile Include="be-src\1_PresentationCore\V8Handler.cpp" />
     <ClCompile Include="be-src\1_PresentationCore\ViewDelegate\PageHandler.cpp" />
     <ClCompile Include="be-src\1_PresentationCore\ViewDelegate\ViewDelegate.cpp" />
     <ClCompile Include="be-src\1_PresentationCore\ViewDelegate\WindowDelegate.cpp" />
@@ -176,6 +175,7 @@
     <ClInclude Include="be-src\1_PresentationCore\Renderer.h" />
     <ClInclude Include="be-src\1_PresentationCore\Scheme\CustomResourceHandler.h" />
     <ClInclude Include="be-src\1_PresentationCore\Scheme\PandaSchemeFactory.h" />
+    <ClInclude Include="be-src\1_PresentationCore\V8Handler.h" />
     <ClInclude Include="be-src\1_PresentationCore\ViewDelegate\PageHandler.h" />
     <ClInclude Include="be-src\1_PresentationCore\ViewDelegate\ViewDelegate.h" />
     <ClInclude Include="be-src\1_PresentationCore\ViewDelegate\WindowDelegate.h" />
