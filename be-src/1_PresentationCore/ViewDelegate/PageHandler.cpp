@@ -1,12 +1,15 @@
 ﻿#include "PageHandler.h"
 
+#include <codecvt>
+#include <nlohmann/json.hpp>
 #include <ranges>
 
+#include "DialogHandler.h"
 #include "include/views/cef_browser_view.h"
 #include "include/views/cef_window.h"
 #include "include/wrapper/cef_helpers.h"
 
-std::vector<std::string> split(const std::string& s, char delim) {
+static std::vector<std::string> split(const std::string& s, char delim) {
   std::vector<std::string> elems;
   std::istringstream iss(s);
   std::string item;
@@ -14,6 +17,16 @@ std::vector<std::string> split(const std::string& s, char delim) {
     elems.push_back(item);
   }
   return elems;
+}
+
+static std::string convertStr(const std::wstring& wide_string) {
+  static std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8_conv;
+  return utf8_conv.to_bytes(wide_string);
+}
+
+static std::wstring convertStr(const std::string& str) {
+  static std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8_conv;
+  return utf8_conv.from_bytes(str);
 }
 
 bool PageHandler::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
@@ -39,12 +52,47 @@ bool PageHandler::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRef
     } else if (msgType == "restore") {
       window->Restore();
     }
+  } else if (msgChannel == "system") {
+    CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(msgName);
+    CefRefPtr<CefListValue> msgArgs = msg->GetArgumentList();
+    if (msgType == "getOSVersion") {
+      std::string version = "win11.2024122901";
+      msgArgs->SetString(0, version);
+    }
+    frame->SendProcessMessage(PID_RENDERER, msg);  // 发给渲染进程
+  } else if (msgChannel == "dialog") {
+    CefRefPtr<CefListValue> msgBody = message->GetArgumentList();
+
+    json param = json::parse(msgBody->GetString(0).ToString());
+    std::wstring title = convertStr(param["title"].get<std::string>());
+    std::wstring defaultPath = convertStr(param["defaultPath"].get<std::string>());
+
+    CefRefPtr<CefRunFileDialogCallback> dcb = new DialogHandler(msgName, frame);
+    CefBrowserHost::FileDialogMode mode;
+    std::vector<CefString> fileFilters;
+    int filterIndex = 0;
+    if (msgType == "openFile") {
+      for (const std::string& var : param["filters"]) {
+        fileFilters.emplace_back(var);
+      }
+      filterIndex = param["filterIndex"].get<int>();
+      mode = param["multiSelections"].get<bool>() ? FILE_DIALOG_OPEN_MULTIPLE : FILE_DIALOG_OPEN;
+      auto a = browser->GetHost();
+      browser->GetHost()->RunFileDialog(mode, title, defaultPath, fileFilters, dcb);
+    } else if (msgType == "openFolder") {
+      mode = FILE_DIALOG_OPEN_FOLDER;
+      browser->GetHost()->RunFileDialog(mode, title, defaultPath, fileFilters, dcb);
+    }
   }
+
   return true;
 }
 
 void PageHandler::OnBeforeContextMenu(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
                                       CefRefPtr<CefContextMenuParams> params, CefRefPtr<CefMenuModel> model) {
+  // const auto is_devtools = frame->GetURL().ToString().find("devtools://") != std::string::npos;
+  // if (is_devtools) return;
+
   model->Clear();
   model->AddItem(MENU_ID_USER_FIRST, L"打开开发者调试工具");
 
@@ -104,14 +152,14 @@ bool PageHandler::OnJSDialog(CefRefPtr<CefBrowser> browser, const CefString& ori
                              bool& suppress_message) {
   suppress_message = false;
   HWND hwnd = browser->GetHost()->GetWindowHandle();
-  if (dialog_type == JSDialogType::JSDIALOGTYPE_ALERT) {  // alert弹框
+  if (dialog_type == JSDIALOGTYPE_ALERT) {  // alert弹框
     MessageBox(hwnd, message_text.ToWString().c_str(), L"系统提示alert", MB_ICONEXCLAMATION | MB_OK);
     callback->Continue(true, CefString());
-  } else if (dialog_type == JSDialogType::JSDIALOGTYPE_CONFIRM) {  // confirm弹框
+  } else if (dialog_type == JSDIALOGTYPE_CONFIRM) {  // confirm弹框
     int msgboxID =
         MessageBox(hwnd, message_text.ToWString().c_str(), L"系统提示confirm", MB_ICONEXCLAMATION | MB_YESNO);
     callback->Continue(msgboxID == IDYES, CefString());
-  } else if (dialog_type == JSDialogType::JSDIALOGTYPE_PROMPT) {  // prompt弹框
+  } else if (dialog_type == JSDIALOGTYPE_PROMPT) {  // prompt弹框
     return false;
   }
   return true;

@@ -3,11 +3,21 @@
 bool V8Handler::Execute(const CefString& name, CefRefPtr<CefV8Value> object, const CefV8ValueList& arguments,
                         CefRefPtr<CefV8Value>& retval, CefString& exception) {
   auto msgName = arguments[0]->GetStringValue();
+  if (msgName == "native_registe_callback") {
+    cb_ = arguments[1];
+    return true;
+  }
 
-  CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(msgName);  // ´´½¨½ø³Ì¼äÏûÏ¢
+  CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(msgName);  // åˆ›å»ºè¿›ç¨‹é—´æ¶ˆæ¯
+
+  CefRefPtr<CefListValue> msgBody = msg->GetArgumentList();
+  if (arguments.size() > 1            // ä¼ é€’è¿‡æ¥å¤šäº1ä¸ªçš„å‚æ•°
+      && arguments[1]->IsString()) {  // ç¬¬äºŒä¸ªå‚æ•°æ˜¯å­—ç¬¦ä¸²ç±»å‹
+    msgBody->SetString(0, arguments[1]->GetStringValue());
+  }
 
   CefRefPtr<CefV8Context> context = CefV8Context::GetCurrentContext();
-  context.get()->GetFrame()->SendProcessMessage(PID_BROWSER, msg);  // ÓÉäÖÈ¾½ø³Ì·¢¸øä¯ÀÀÆ÷½ø³Ì
+  context.get()->GetFrame()->SendProcessMessage(PID_BROWSER, msg);  // ç”±æ¸²æŸ“è¿›ç¨‹å‘ç»™æµè§ˆå™¨è¿›ç¨‹
 
-  return true;  // ±íÊ¾ÒÑ´¦ÀíÕâ¸ö·½·¨
+  return true;  // è¡¨ç¤ºå·²å¤„ç†è¿™ä¸ªæ–¹æ³•
 };

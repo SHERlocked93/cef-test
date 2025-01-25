@@ -13,7 +13,7 @@ class PageHandler : public CefClient,
 
   CefRefPtr<CefContextMenuHandler> GetContextMenuHandler() override { return this; }
 
-  //! 接收渲染进程发来的消息
+  //! 浏览器进程接收渲染进程发来的消息
   bool OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
                                 CefProcessId source_process, CefRefPtr<CefProcessMessage> message) override;
 

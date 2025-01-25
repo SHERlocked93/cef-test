@@ -2,12 +2,12 @@
 #include "include/views/cef_browser_view.h"
 #include "include/views/cef_window.h"
 
-// ´°¿Ú´úÀíÀà£¬²Ù×÷´°¿ÚµÄÄÜÁ¦
+// çª—å£ä»£ç†ç±»ï¼Œæ“ä½œçª—å£çš„èƒ½åŠ›
 class WindowDelegate : public CefWindowDelegate {
  public:
   explicit WindowDelegate(CefRefPtr<CefBrowserView> browser_view, bool is_devtool)
       : is_devtool_(is_devtool), browser_view_(browser_view) {}
-  // ÎŞ±ß¿ò´°¿Ú£¬ÆÁ±Îµô·ÇdevtoolµÄ´°¿ÚµÄÏµÍ³Ä¬ÈÏµÄ±êÌâÀ¸
+  // æ— è¾¹æ¡†çª—å£ï¼Œå±è”½æ‰édevtoolçš„çª—å£çš„ç³»ç»Ÿé»˜è®¤çš„æ ‡é¢˜æ 
   bool IsFrameless(CefRefPtr<CefWindow> window) override;
   void OnWindowCreated(CefRefPtr<CefWindow> window) override;
   void OnWindowDestroyed(CefRefPtr<CefWindow> window) override;
@@ -17,7 +17,7 @@ class WindowDelegate : public CefWindowDelegate {
   WindowDelegate& operator=(const WindowDelegate&) = delete;
 
  private:
-  // µ±Ç°´°¿ÚÊÇ·ñÎª¿ª·¢Õß¹¤¾ß´°¿Ú
+  // å½“å‰çª—å£æ˜¯å¦ä¸ºå¼€å‘è€…å·¥å…·çª—å£
   bool is_devtool_;
   CefRefPtr<CefBrowserView> browser_view_;
   IMPLEMENT_REFCOUNTING(WindowDelegate);

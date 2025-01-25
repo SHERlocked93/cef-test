@@ -59,15 +59,20 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="thirdparty\conan\conandeps.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="thirdparty\conan\conandeps.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="thirdparty\conan\conandeps.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="conan\conandeps.props" />
+    <Import Project="thirdparty\conan\conandeps.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -90,6 +95,10 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>
+set CONAN_BUILD_CONFIG="$(Configuration)_$(Platform)" &amp;&amp; "$(ProjectDir).conan\conan_install.bat" . -pr:h=.conan/$(Configuration)_$(Platform) -pr:b=default --build=missing</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -106,6 +115,10 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>
+set CONAN_BUILD_CONFIG="$(Configuration)_$(Platform)" &amp;&amp; "$(ProjectDir).conan\conan_install.bat" . -pr:h=.conan/$(Configuration)_$(Platform) -pr:b=default --build=missing</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -116,11 +129,13 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(SolutionDir)thirdparty\conan;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(ProjectDir)..\cef_131_test1\libcef_dll_wrapper\Debug\libcef_dll_wrapper.lib;$(ProjectDir)..\cef_binary_131_windows64\Debug\libcef.lib;$(ProjectDir)..\cef_binary_131_windows64\Debug\cef_sandbox.lib;comctl32.lib;gdi32.lib;rpcrt4.lib;shlwapi.lib;ws2_32.lib;Advapi32.lib;dbghelp.lib;Delayimp.lib;OleAut32.lib;PowrProf.lib;Propsys.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)thirdparty\conan;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>$(ProjectDir)ceftest.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
@@ -150,6 +165,10 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>
+set CONAN_BUILD_CONFIG="$(Configuration)_$(Platform)" &amp;&amp; "$(ProjectDir).conan\conan_install.bat" . -pr:h=.conan/$(Configuration)_$(Platform) -pr:b=default --build=missing</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
@@ -176,6 +195,7 @@
     <ClInclude Include="be-src\1_PresentationCore\Scheme\CustomResourceHandler.h" />
     <ClInclude Include="be-src\1_PresentationCore\Scheme\PandaSchemeFactory.h" />
     <ClInclude Include="be-src\1_PresentationCore\V8Handler.h" />
+    <ClInclude Include="be-src\1_PresentationCore\ViewDelegate\DialogHandler.h" />
     <ClInclude Include="be-src\1_PresentationCore\ViewDelegate\PageHandler.h" />
     <ClInclude Include="be-src\1_PresentationCore\ViewDelegate\ViewDelegate.h" />
     <ClInclude Include="be-src\1_PresentationCore\ViewDelegate\WindowDelegate.h" />

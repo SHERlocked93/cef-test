@@ -74,5 +74,8 @@
     <ClInclude Include="be-src\1_PresentationCore\V8Handler.h">
       <Filter>be-src\1_PresentaitonCore</Filter>
     </ClInclude>
+    <ClInclude Include="be-src\1_PresentationCore\ViewDelegate\DialogHandler.h">
+      <Filter>be-src\1_PresentaitonCore\ViewDelegate</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

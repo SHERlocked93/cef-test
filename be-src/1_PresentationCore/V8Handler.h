@@ -4,13 +4,14 @@
 class V8Handler : public CefV8Handler {
  public:
   V8Handler() = default;
+  CefRefPtr<CefV8Value> cb_;
 
-  //! È«¾Ö×¢²á·½·¨Ö´ĞĞÊ±ºòµÄ»Øµ÷
-  //! \param name ·½·¨Ãû£¬ex:nativeCall
-  //! \param object JSµ÷ÓÃÕâ¸ö·½·¨Ê±µÄthis
-  //! \param arguments JSµ÷ÓÃÕâ¸ö·½·¨Ê±´«µİµÄ²ÎÊı
-  //! \param retval [out] ·½·¨Ö´ĞĞÍêºóCPP·µ»Ø¸øJSµÄ·µ»ØÖµ
-  //! \param exception [out] ·½·¨Ö´ĞĞ¹ı³ÌÖĞ³öÏÖµÄÒì³££¬ÔÚJSÖĞ×÷ÎªerrorÅ×³ö
+  //! å…¨å±€æ³¨å†Œæ–¹æ³•æ‰§è¡Œæ—¶å€™çš„å›è°ƒ
+  //! \param name æ–¹æ³•åï¼Œex:nativeCall
+  //! \param object JSè°ƒç”¨è¿™ä¸ªæ–¹æ³•æ—¶çš„this
+  //! \param arguments JSè°ƒç”¨è¿™ä¸ªæ–¹æ³•æ—¶ä¼ é€’çš„å‚æ•°
+  //! \param retval [out] æ–¹æ³•æ‰§è¡Œå®ŒåCPPè¿”å›ç»™JSçš„è¿”å›å€¼
+  //! \param exception [out] æ–¹æ³•æ‰§è¡Œè¿‡ç¨‹ä¸­å‡ºç°çš„å¼‚å¸¸ï¼Œåœ¨JSä¸­ä½œä¸ºerroræŠ›å‡º
   virtual bool Execute(const CefString& name, CefRefPtr<CefV8Value> object, const CefV8ValueList& arguments,
                        CefRefPtr<CefV8Value>& retval, CefString& exception) override;
 

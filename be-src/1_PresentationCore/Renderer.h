@@ -10,6 +10,10 @@ class Renderer : public CefApp, public CefRenderProcessHandler {
   CefRefPtr<CefRenderProcessHandler> GetRenderProcessHandler() override { return this; }
   void OnRegisterCustomSchemes(CefRawPtr<CefSchemeRegistrar> registrar) override;
 
+  //! 渲染进程接收浏览器进程发来的消息
+  bool OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                                CefProcessId source_process, CefRefPtr<CefProcessMessage> message) override;
+
   //! 页面的JS执行上下文创建完成
   //! \param context JS执行上下文
   void OnContextCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
