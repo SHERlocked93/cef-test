@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "include/wrapper/cef_helpers.h"
+#undef min
 
 bool CustomResourceHandler::Open(CefRefPtr<CefRequest> request, bool& handle_request,
                                  CefRefPtr<CefCallback> callback) {
