@@ -191,6 +191,7 @@ set CONAN_BUILD_CONFIG="$(Configuration)_$(Platform)" &amp;&amp; "$(ProjectDir).
   <ItemGroup>
     <ClInclude Include="be-src\1_PresentationCore\App.h" />
     <ClInclude Include="be-src\1_PresentationCore\Other.h" />
+    <ClInclude Include="be-src\1_PresentationCore\ReleaseCallback.h" />
     <ClInclude Include="be-src\1_PresentationCore\Renderer.h" />
     <ClInclude Include="be-src\1_PresentationCore\Scheme\CustomResourceHandler.h" />
     <ClInclude Include="be-src\1_PresentationCore\Scheme\PandaSchemeFactory.h" />

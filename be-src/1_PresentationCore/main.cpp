@@ -16,7 +16,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
   } else if (command_line->GetSwitchValue("type").ToString() == "renderer") {
     app = new Renderer();  // 渲染进程
   } else {
-    app = new Other(); // GPU进程、辅助进程等
+    app = new Other();  // GPU进程、辅助进程等
   }
 
   int exit_code = CefExecuteProcess(main_args, app, nullptr);  // 启动进程
@@ -25,7 +25,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     return exit_code;
   }
   CefSettings settings;
-  settings.no_sandbox = 1;
+  // settings.no_sandbox = 1;
+  settings.remote_debugging_port = 9222;        // 指定远程调试端口
+  settings.log_severity = LOGSEVERITY_VERBOSE;  // 启用详细日志
 
   CefInitialize(main_args, settings, app.get(), nullptr);
   CefRunMessageLoop();

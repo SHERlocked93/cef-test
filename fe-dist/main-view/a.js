@@ -3,6 +3,7 @@ document.write(location.href);
 let eventer = {
     dic: {},
     emit(eventName, ...obj) {
+        console.log("[eventer emit]", eventName, obj);
         if (!this.dic[eventName]) {
             console.warn(`没有找到该事件的监听函数：${eventName}`)
             return;
@@ -10,19 +11,22 @@ let eventer = {
         this.dic[eventName].forEach((func) => func(...obj))
     },
     on(eventName, callBack) {
+        console.log("[eventer on]", eventName);
         if (!this.dic[eventName]) this.dic[eventName] = [callBack];
         else this.dic[eventName].push(callBack)
     },
     once(eventName, callBack) {
+        console.log("[eventer once]", eventName);
         let callBackWrap = (...obj) => {
-            let index = this.dic[eventName].findIndex((v) => v == callBackWrap)
-            if (index >= 0) this.dic[eventName].splice(index, 1)
+            let idx = this.dic[eventName].findIndex((v) => v == callBackWrap)
+            if (idx >= 0) this.dic[eventName].splice(idx, 1)
             callBack(...obj)
         }
         if (!this.dic[eventName]) this.dic[eventName] = [callBackWrap];
         else this.dic[eventName].push(callBackWrap)
     },
     off(eventName, callBack) {
+        console.log("[eventer off]", eventName);
         if (!this.dic[eventName]?.length < 1) return
         if (!callBack) {
             offAll(eventName)
@@ -32,6 +36,7 @@ let eventer = {
         if (index >= 0) this.dic[eventName].splice(index, 1)
     },
     offAll(eventName) {
+        console.log("[eventer offAll]", eventName);
         delete this.dic[eventName]
     }
 }
@@ -47,8 +52,16 @@ let native = {
             window.globalBridge(eventName, ...params);
         });
     },
+    callReuse(msgName, ...params) {
+        return new Promise((resolve, reject) => {
+            let eventName = `${msgName}_${this.randomNum_()}`;
+            eventer.on(eventName, resolve);
+            window.globalBridge(eventName, ...params);
+        });
+    },
     init() {
         window.globalBridge(`native_registe_callback`, (msgName, ...otherParams) => {
+            console.log("native_registe_callback", msgName, otherParams)
             eventer.emit(msgName, ...otherParams);
         });
     },
@@ -132,7 +145,7 @@ native.init();
 
     let getSystemInfoBtn = document.querySelector("#getSystemInfoBtn");
     getSystemInfoBtn.addEventListener("click", async () => {
-        let result = await system['getOSVersion']();
+        let result = await system.getOSVersion();
         console.log({result})
         alert(result)
     })
@@ -168,6 +181,7 @@ native.init();
         let files = await dialog.openFile(param);
         console.log(files);
     });
+
     let dirOpneBtn = document.querySelector("#dirOpneBtn");
     dirOpneBtn.addEventListener("click", async () => {
         let param = {

@@ -1,12 +1,15 @@
 ﻿#include "PageHandler.h"
 
 #include <codecvt>
+#include <fstream>
 #include <nlohmann/json.hpp>
-#include <ranges>
 
 #include "DialogHandler.h"
+#include "include/base/cef_callback.h"
+#include "include/cef_task.h"
 #include "include/views/cef_browser_view.h"
 #include "include/views/cef_window.h"
+#include "include/wrapper/cef_closure_task.h"
 #include "include/wrapper/cef_helpers.h"
 
 static std::vector<std::string> split(const std::string& s, char delim) {
@@ -27,6 +30,36 @@ static std::string convertStr(const std::wstring& wide_string) {
 static std::wstring convertStr(const std::string& str) {
   static std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8_conv;
   return utf8_conv.from_bytes(str);
+}
+
+void ReadFileByBlocks(const std::string& filePath, const std::string& msgName, CefRefPtr<CefFrame> frame) {
+  std::ifstream fileStream(filePath, std::ifstream::binary);
+  if (fileStream) {
+    fileStream.seekg(0, fileStream.end);
+    long length = fileStream.tellg();  // 文件总长
+    fileStream.seekg(0, fileStream.beg);
+    long size = 1024;
+    long position = 0;
+    while (position != length) {  // 循环读取，每次读size个字节
+      long leftSize = length - position;
+      if (leftSize < size) {
+        size = leftSize;
+      }
+      char* buffer = new char[size];
+      fileStream.read(buffer, size);
+      position = fileStream.tellg();
+      CefRefPtr<CefBinaryValue> data = CefBinaryValue::Create(buffer, size);
+      CefRefPtr<CefProcessMessage> msgBack = CefProcessMessage::Create(msgName + "_data");
+      CefRefPtr<CefListValue> msgArgs = msgBack->GetArgumentList();
+      msgArgs->SetBinary(0, data);
+      frame->SendProcessMessage(PID_RENDERER, msgBack);
+      delete[] buffer;
+    }
+
+    fileStream.close();
+    CefRefPtr<CefProcessMessage> msgBack = CefProcessMessage::Create(msgName + "_finish");
+    frame->SendProcessMessage(PID_RENDERER, msgBack);
+  }
 }
 
 bool PageHandler::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
@@ -70,18 +103,26 @@ bool PageHandler::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRef
     CefRefPtr<CefRunFileDialogCallback> dcb = new DialogHandler(msgName, frame);
     CefBrowserHost::FileDialogMode mode;
     std::vector<CefString> fileFilters;
-    int filterIndex = 0;
     if (msgType == "openFile") {
       for (const std::string& var : param["filters"]) {
         fileFilters.emplace_back(var);
       }
-      filterIndex = param["filterIndex"].get<int>();
       mode = param["multiSelections"].get<bool>() ? FILE_DIALOG_OPEN_MULTIPLE : FILE_DIALOG_OPEN;
       auto a = browser->GetHost();
       browser->GetHost()->RunFileDialog(mode, title, defaultPath, fileFilters, dcb);
     } else if (msgType == "openFolder") {
       mode = FILE_DIALOG_OPEN_FOLDER;
       browser->GetHost()->RunFileDialog(mode, title, defaultPath, fileFilters, dcb);
+    }
+  } else if (msgChannel == "file") {
+    if (msgType == "readFile") {
+      CefRefPtr<CefListValue> msgBody = message->GetArgumentList();
+      json param = json::parse(msgBody->GetString(0).ToString());
+      auto filePath = param["filePath"].get<std::string>();
+
+      // TID_FILE_BACKGROUND 线程标记，指代文件读写后台线程，在这个线程下执行的任务不会阻塞浏览器主线程的操作
+      // 浏览器进程的主线程的标记为 TID_UI，渲染进程主线程的标记为 PID_RENDERER。
+      CefPostTask(TID_FILE_BACKGROUND, base::BindOnce(&ReadFileByBlocks, filePath, msgName, frame));
     }
   }
 
