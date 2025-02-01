@@ -1,5 +1,7 @@
 ﻿#include "PageHandler.h"
 
+#include <sqlite3.h>
+
 #include <codecvt>
 #include <fstream>
 #include <nlohmann/json.hpp>
@@ -11,6 +13,8 @@
 #include "include/views/cef_window.h"
 #include "include/wrapper/cef_closure_task.h"
 #include "include/wrapper/cef_helpers.h"
+
+static sqlite3* db = nullptr;
 
 static std::vector<std::string> split(const std::string& s, char delim) {
   std::vector<std::string> elems;
@@ -60,6 +64,45 @@ void ReadFileByBlocks(const std::string& filePath, const std::string& msgName, C
     CefRefPtr<CefProcessMessage> msgBack = CefProcessMessage::Create(msgName + "_finish");
     frame->SendProcessMessage(PID_RENDERER, msgBack);
   }
+}
+
+//! 执行sqlite3的sql语句
+static void ExecuteSql(const std::string& sqlStr, const std::string& msgName, CefRefPtr<CefFrame> frame) {
+  json result;
+  result["data"] = {};
+  const char* zTail = sqlStr.c_str();
+  sqlite3_exec(db, "BEGIN TRANSACTION;", NULL, NULL, NULL);
+  while (strlen(zTail) != 0) {
+    sqlite3_stmt* stmt = NULL;
+    // 判断 prepareResult == SQLITE_OK 并处理异常
+    int prepareResult = sqlite3_prepare_v2(db, zTail, -1, &stmt, &zTail);
+    int stepResult = sqlite3_step(stmt);
+    while (stepResult == SQLITE_ROW) {
+      json row;
+      int columnCount = sqlite3_column_count(stmt);
+      for (size_t i = 0; i < columnCount; i++) {
+        std::string columnName = sqlite3_column_name(stmt, i);
+        int type = sqlite3_column_type(stmt, i);
+        if (type == SQLITE_INTEGER) {
+          row[columnName] = sqlite3_column_int(stmt, i);
+        } else if (type == SQLITE3_TEXT) {
+          const unsigned char* val = sqlite3_column_text(stmt, i);
+          row[columnName] = reinterpret_cast<const char*>(val);
+        }
+        // 这里只处理了两种数据类型是不足以满足生产条件的
+      }
+      result["data"].push_back(row);
+      stepResult = sqlite3_step(stmt);
+    }
+    sqlite3_finalize(stmt);
+  }
+  sqlite3_exec(db, "END TRANSACTION;", NULL, NULL, NULL);
+
+  CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(msgName);
+  CefRefPtr<CefListValue> msgArgs = msg->GetArgumentList();
+  result["success"] = true;
+  msgArgs->SetString(0, result.dump());
+  frame->SendProcessMessage(PID_RENDERER, msg);
 }
 
 bool PageHandler::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
@@ -123,6 +166,34 @@ bool PageHandler::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRef
       // TID_FILE_BACKGROUND 线程标记，指代文件读写后台线程，在这个线程下执行的任务不会阻塞浏览器主线程的操作
       // 浏览器进程的主线程的标记为 TID_UI，渲染进程主线程的标记为 PID_RENDERER。
       CefPostTask(TID_FILE_BACKGROUND, base::BindOnce(&ReadFileByBlocks, filePath, msgName, frame));
+    }
+  } else if (msgChannel == "db") {
+    CefRefPtr<CefListValue> msgBody = message->GetArgumentList();
+    if (msgType == "open") {
+      json param = json::parse(msgBody->GetString(0).ToString());
+      std::string dbPath = param["dbPath"].get<std::string>();
+      int rc = sqlite3_open(dbPath.c_str(), &db);
+      CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(msgName);
+      CefRefPtr<CefListValue> msgArgs = msg->GetArgumentList();
+      json result;
+      result["success"] = rc == 0;
+      msgArgs->SetString(0, result.dump());
+      frame->SendProcessMessage(PID_RENDERER, msg);
+    } else if (msgType == "close") {
+      int rc = sqlite3_close(db);
+      CefRefPtr<CefProcessMessage> msg = CefProcessMessage::Create(msgName);
+      CefRefPtr<CefListValue> msgArgs = msg->GetArgumentList();
+      json result;
+      const auto isSucc = rc == SQLITE_OK;
+      if (isSucc) db = nullptr;
+
+      result["success"] = isSucc;
+      msgArgs->SetString(0, result.dump());
+      frame->SendProcessMessage(PID_RENDERER, msg);
+    } else if (msgType == "execute") {
+      json param = json::parse(msgBody->GetString(0).ToString());
+      std::string sqlStr = param["sql"].get<std::string>();
+      CefPostTask(TID_FILE_BACKGROUND, base::BindOnce(&ExecuteSql, sqlStr, msgName, frame));
     }
   }
 

@@ -192,3 +192,168 @@ native.init();
         console.log(files);
     });
 }
+
+
+let file = {
+    getMsgName(args) {
+        return `file_${args.callee.name}`
+    },
+    readFile(param) {
+        let msgName = this.getMsgName(arguments);
+        let onData = (obj) => {
+            if (param.onData) {
+                param.onData(obj);
+            }
+        }
+        let onFinish = (obj) => {
+            if (param.onFinish) {
+                param.onFinish(obj);
+            }
+            eventer.off(`${msgName}_data`, onData)
+        }
+        eventer.on(`${msgName}_data`, onData);
+        eventer.once(`${msgName}_finish`, onFinish);
+        native.callReuse(msgName, JSON.stringify(param));
+    }
+}
+let readFileBtn = document.querySelector("#readFileBtn");
+readFileBtn.addEventListener("click", async () => {
+    let result = "";
+    let param = {
+        filePath: "C:\\PandaProjects\\Codes\\cef_131_mytest\\README.md",
+        onData(chunk) {
+            let decoder = new TextDecoder('utf-8', {ignoreBOM: true})
+            let str = decoder.decode(chunk)
+            result += str;
+            console.log('ondata', result)
+        },
+        onFinish(data) {
+            console.log("文件读取完成")
+            console.log(result);
+            alert(result)
+        }
+    }
+    file.readFile(param);
+    console.log({eventer})
+})
+
+let db = {
+    getMsgName(args) {
+        return `db_${args.callee.name}`;
+    },
+    async open(param) {
+        let msgName = this.getMsgName(arguments);
+        let result = await native.call(msgName, JSON.stringify(param));
+        return JSON.parse(result);
+    },
+    async close() {
+        let msgName = this.getMsgName(arguments);
+        let result = await native.call(msgName);
+        return JSON.parse(result);
+    },
+    async execute(param) {
+        let msgName = this.getMsgName(arguments);
+        let result = await native.call(msgName, JSON.stringify(param));
+        return JSON.parse(result);
+    },
+};
+
+{
+    let db = {
+        getMsgName(args) {
+            return `db_${args.callee.name}`;
+        },
+        async open(param) {
+            let msgName = this.getMsgName(arguments);
+            let result = await native.call(msgName, JSON.stringify(param));
+            return JSON.parse(result);
+        },
+        async close() {
+            let msgName = this.getMsgName(arguments);
+            let result = await native.call(msgName);
+            return JSON.parse(result);
+        },
+        async execute(param) {
+            let msgName = this.getMsgName(arguments);
+            let result = await native.call(msgName, JSON.stringify(param));
+            return JSON.parse(result);
+        },
+    };
+
+
+    let dbBtn = document.querySelector("#dbBtn");
+    dbBtn.addEventListener("click", async () => {
+        if (dbBtn.innerHTML === "打开数据库") {
+            let result = await db.open({
+                dbPath: "C:\\PandaProjects\\Codes\\cef_131_mytest\\data\\test.db",
+            });
+            console.log(result);
+            dbBtn.innerHTML = "关闭数据库";
+        } else if (dbBtn.innerHTML === "关闭数据库") {
+            let result = await db.close();
+            console.log(result);
+            dbBtn.innerHTML = "打开数据库";
+        }
+    });
+
+    let insertBtn = document.querySelector("#insertBtn");
+    insertBtn.addEventListener("click", async () => {
+        let msgs = [
+            {
+                message: `天接云涛连晓雾，星河欲转千帆舞。仿佛梦魂归帝所。闻天语，殷勤问我归何处。 我报路长嗟日暮，学诗谩有惊人句。九万里风鹏正举。风休住，蓬舟吹取三山去！`,
+                fromUser: `李清照`,
+                toUser: "辛弃疾",
+            },
+            {
+                message: `醉里挑灯看剑，梦回吹角连营。八百里分麾下炙，五十弦翻塞外声。沙场秋点兵。 马作的卢飞快，弓如霹雳弦惊。了却君王天下事，赢得生前身后名。可怜白发生！`,
+                fromUser: `辛弃疾`,
+                toUser: "李清照",
+            },
+        ];
+        let sqls = [];
+        for (let i = 0; i < 60; i++) {
+            let msg = msgs[i % 2];
+            sqls.push(
+                `insert into Message(Message, fromUser, toUser)
+                 values ('${msg.message}', '${msg.fromUser}', '${msg.toUser}');`
+            );
+        }
+        let result = await db.execute({sql: sqls.join("")});
+        console.log(result);
+    });
+
+    let selectBtn = document.querySelector("#selectBtn");
+    selectBtn.addEventListener("click", async () => {
+        let sql = `select rowid, *
+                   from Message limit 16;`;
+        let result = await db.execute({sql});
+        console.log(result);
+    });
+
+    let updateBtn = document.querySelector("#updateBtn");
+    updateBtn.addEventListener("click", async () => {
+        let obj = {
+            message:
+                "怒发冲冠，凭栏处、潇潇雨歇。抬望眼、仰天长啸，壮怀激烈。三十功名尘与土，八千里路云和月。莫等闲、白了少年头，空悲切。 靖康耻，犹未雪。臣子恨，何时灭。驾长车，踏破贺兰山缺。壮志饥餐胡虏肉，笑谈渴饮匈奴血。待从头、收拾旧山河，朝天阙。",
+            fromUser: "岳飞",
+            toUser: "辛弃疾",
+        };
+        let sql = `update Message
+                   set Message  = '${obj.message}',
+                       fromUser = '${obj.fromUser}',
+                       toUser='${obj.toUser}'
+                   where rowid in (select rowid from Message limit 1);`;
+        let result = await db.execute({sql});
+        console.log(result);
+    });
+
+    let deleteBtn = document.querySelector("#deleteBtn");
+    deleteBtn.addEventListener("click", async () => {
+        let sql = `delete
+                   from Message
+                   where rowid in (select rowid from Message limit 1);`;
+        let result = await db.execute({sql});
+        console.log(result);
+    });
+
+}
