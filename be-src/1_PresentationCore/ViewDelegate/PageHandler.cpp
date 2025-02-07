@@ -2,9 +2,11 @@
 
 #include <sqlite3.h>
 
+#include <chrono>
 #include <codecvt>
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include <thread>
 
 #include "DialogHandler.h"
 #include "include/base/cef_callback.h"
@@ -13,6 +15,8 @@
 #include "include/views/cef_window.h"
 #include "include/wrapper/cef_closure_task.h"
 #include "include/wrapper/cef_helpers.h"
+#include "vlc/vlc.h"
+using namespace std::chrono_literals;
 
 static sqlite3* db = nullptr;
 
@@ -194,6 +198,62 @@ bool PageHandler::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRef
       json param = json::parse(msgBody->GetString(0).ToString());
       std::string sqlStr = param["sql"].get<std::string>();
       CefPostTask(TID_FILE_BACKGROUND, base::BindOnce(&ExecuteSql, sqlStr, msgName, frame));
+    }
+  } else if (msgChannel == "video") {
+    static libvlc_media_player_t* player = nullptr;
+    static libvlc_instance_t* vlc_ins = nullptr;
+    static libvlc_media_t* media = nullptr;
+    if (msgType == "open") {
+      CefRefPtr<CefListValue> msgBody = message->GetArgumentList();
+      json param = json::parse(msgBody->GetString(0).ToString());
+      std::string videoPath = param["videoPath"].get<std::string>();
+
+      vlc_ins = libvlc_new(0, NULL);  // 创建vlc实例
+
+      if (!vlc_ins) {
+        fprintf(stderr, "Unable to get VLC instance.\n\t%s\n", libvlc_errmsg());
+        return EXIT_FAILURE;
+      }
+
+      media = libvlc_media_new_path(vlc_ins, videoPath.c_str());  // 注意路径为utf8
+      player = libvlc_media_player_new_from_media(media);         // 创建播放对象
+
+      std::thread videoPlaying([]() {
+        int ret = libvlc_media_player_play(player);  // 进行播放
+        if (ret == -1 || !player) return EXIT_FAILURE;
+
+        while (libvlc_media_player_is_playing(player)) {
+          std::this_thread::sleep_for(2ms);
+        }
+      });
+      Sleep(1000);
+
+      libvlc_time_t tm = libvlc_media_player_get_length(player);  // 获得视频长度
+      std::string fmtTime = std::format("{:02}:{:02}:{:02}",
+                                        tm / 3600000,       // 小时
+                                        (tm / 60000) % 60,  // 分钟
+                                        (tm / 1000) % 60);  // 秒
+      int width = libvlc_video_get_width(player);           // 获取视频宽度
+      int hight = libvlc_video_get_height(player);          // 获取视频高度
+
+      std::string fmtSize = std::format("w-{}:h-{}", width, hight);
+      videoPlaying.detach();
+
+    } else if (msgType == "pause") {
+      if (player) libvlc_media_player_pause(player);
+    } else if (msgType == "play") {
+      if (player) libvlc_media_player_play(player);
+    } else if (msgType == "stop") {
+      if (player) libvlc_media_player_stop(player);
+    } else if (msgType == "close") {
+      if (player) libvlc_media_player_release(player);  // 释放播放实例
+      if (media) libvlc_media_release(media);           // 释放媒体实例
+      if (vlc_ins) libvlc_release(vlc_ins);             // 释放VLC实例
+    } else if (msgType == "fullscreen") {
+      CefRefPtr<CefListValue> msgBody = message->GetArgumentList();
+      json param = json::parse(msgBody->GetString(0).ToString());
+      bool isFullscreen = param["fullscreen"].get<bool>();
+      if (player) libvlc_set_fullscreen(player, isFullscreen);  // 全屏
     }
   }
 

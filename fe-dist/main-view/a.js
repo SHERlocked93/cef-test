@@ -151,6 +151,60 @@ native.init();
     })
 }
 
+{
+    let video = {
+        getMsgName(args) {
+            return `video_${args.callee.name}`;
+        },
+        async open(param) {
+            let msgName = this.getMsgName(arguments);
+            native.call(msgName, JSON.stringify(param));
+        },
+        async pause(param) {
+            let msgName = this.getMsgName(arguments);
+            native.call(msgName, JSON.stringify(param));
+        },
+        async play(param) {
+            let msgName = this.getMsgName(arguments);
+            native.call(msgName, JSON.stringify(param));
+        },
+        async stop(param) {
+            let msgName = this.getMsgName(arguments);
+            native.call(msgName, JSON.stringify(param));
+        },
+        async close(param) {
+            let msgName = this.getMsgName(arguments);
+            native.call(msgName, JSON.stringify(param));
+        },
+        async fullscreen(param) {
+            let msgName = this.getMsgName(arguments);
+            native.call(msgName, JSON.stringify(param));
+        },
+        fullscreenStatus: false
+    };
+
+    document.querySelector("#videoBtn").addEventListener("click", async () => {
+        video.open({
+            videoPath: "C:\\PandaProjects\\Codes\\cef_131_mytest\\x64\\Debug\\opening_final_4k_c.mp4"
+        });
+    })
+    document.querySelector("#videoPauseBtn").addEventListener("click", async () => {
+        video.pause();
+    })
+    document.querySelector("#videoPlayBtn").addEventListener("click", async () => {
+        video.play();
+    })
+    document.querySelector("#videoStopBtn").addEventListener("click", async () => {
+        video.stop();
+    })
+    document.querySelector("#videoCloseBtn").addEventListener("click", async () => {
+        video.close();
+    })
+    document.querySelector("#videoFullscreenBtn").addEventListener("click", async () => {
+        video.fullscreen({fullscreen: video.fullscreenStatus = !video.fullscreenStatus});
+    })
+}
+
 
 {
     let dialog = {
@@ -237,26 +291,6 @@ readFileBtn.addEventListener("click", async () => {
     console.log({eventer})
 })
 
-let db = {
-    getMsgName(args) {
-        return `db_${args.callee.name}`;
-    },
-    async open(param) {
-        let msgName = this.getMsgName(arguments);
-        let result = await native.call(msgName, JSON.stringify(param));
-        return JSON.parse(result);
-    },
-    async close() {
-        let msgName = this.getMsgName(arguments);
-        let result = await native.call(msgName);
-        return JSON.parse(result);
-    },
-    async execute(param) {
-        let msgName = this.getMsgName(arguments);
-        let result = await native.call(msgName, JSON.stringify(param));
-        return JSON.parse(result);
-    },
-};
 
 {
     let db = {
