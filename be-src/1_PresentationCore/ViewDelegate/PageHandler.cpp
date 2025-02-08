@@ -208,6 +208,10 @@ bool PageHandler::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRef
       json param = json::parse(msgBody->GetString(0).ToString());
       std::string videoPath = param["videoPath"].get<std::string>();
 
+      if (player) libvlc_media_player_release(player);
+      if (media) libvlc_media_release(media);
+      if (vlc_ins) libvlc_release(vlc_ins);
+
       vlc_ins = libvlc_new(0, NULL);  // 创建vlc实例
 
       if (!vlc_ins) {
@@ -217,14 +221,21 @@ bool PageHandler::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRef
 
       media = libvlc_media_new_path(vlc_ins, videoPath.c_str());  // 注意路径为utf8
       player = libvlc_media_player_new_from_media(media);         // 创建播放对象
+      if (!player) {
+        fprintf(stderr, "Unable to get VLC media player.\n\t%s\n", libvlc_errmsg());
+        if (media) libvlc_media_release(media);  // 释放媒体实例
+        if (vlc_ins) libvlc_release(vlc_ins);    // 释放VLC实例
+        return EXIT_FAILURE;
+      }
 
-      std::thread videoPlaying([]() {
+      std::thread videoPlaying([] {
         int ret = libvlc_media_player_play(player);  // 进行播放
         if (ret == -1 || !player) return EXIT_FAILURE;
 
         while (libvlc_media_player_is_playing(player)) {
           std::this_thread::sleep_for(2ms);
         }
+        return EXIT_SUCCESS;
       });
       Sleep(1000);
 

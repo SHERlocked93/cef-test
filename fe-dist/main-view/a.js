@@ -236,8 +236,8 @@ native.init();
         console.log(files);
     });
 
-    let dirOpneBtn = document.querySelector("#dirOpneBtn");
-    dirOpneBtn.addEventListener("click", async () => {
+    let dirOpenBtn = document.querySelector("#dirOpenBtn");
+    dirOpenBtn.addEventListener("click", async () => {
         let param = {
             title: "这是打开文件夹对话框的标题",
             defaultPath: "C:\\Program Files",
